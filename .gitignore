@@ -1,4 +1,4 @@
 Thumbs.db
 *.log
 .cache
- node_modules
+node_modules
