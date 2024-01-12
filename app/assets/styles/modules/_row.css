@@ -3,7 +3,6 @@
   &--gutters {
     margin-right: -65px;
   }
-
   &--gutters > div {
     padding-right: 65px;
   }
@@ -22,8 +21,8 @@
       margin-bottom: 0;
     }
     &__medium-4 {
-      width: 33.33%;
       float: left;
+      width: 33.33%;
     }
     &__medium-4--larger {
       width: 37%;
@@ -41,7 +40,6 @@
       width: 66.66%;
     }
     &__medium-8--smaller {
-      float: left;
       width: 63%;
     }
   }
