@@ -5,7 +5,8 @@
   },
   "dependencies": {
     "lodash": "^4.17.21",
-    "normalize.css": "^8.0.1"
+    "normalize.css": "^8.0.1",
+    "postcss-hexrgba": "^2.1.0"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.16",
