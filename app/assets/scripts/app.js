@@ -3,7 +3,7 @@ import MobileMenu from "./modules/MobileMenu";
 import RevealOnScroll from "./modules/RevealOnScroll";
 import StickyHeader from "./modules/StickyHeader";
 
-let StickyHeaderIn = new StickyHeader();
+new StickyHeader();
 
 let RevealOnScrollIn = new RevealOnScroll(
   document.querySelectorAll(".feature-items"),
@@ -12,7 +12,24 @@ let RevealOnScrollIn = new RevealOnScroll(
 
 new RevealOnScroll(document.querySelectorAll(".testimonials"), 50);
 
-let MobileMenuIn = new MobileMenu();
+new MobileMenu();
+let modal;
+
+document.querySelectorAll(".open-modal").forEach((el) => {
+  el.addEventListener("click", (e) => {
+    e.preventDefault();
+    if (typeof modal == "undefined") {
+      import(/* webpackChunckName : "modal" */ "./modules/Modal")
+        .then((x) => {
+          modal = new x.default();
+          setTimeout(() => modal.openModal(), 20);
+        })
+        .catch(() => console.log("file-iig duudhad aldaa garlaa"));
+    } else {
+      modal.openModal();
+    }
+  });
+});
 
 if (module.hot) {
   module.hot.accept();
