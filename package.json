@@ -4,6 +4,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
+    "lazysizes": "^5.3.2",
     "lodash": "^4.17.21",
     "normalize.css": "^8.0.1",
     "postcss-hexrgba": "^2.1.0"

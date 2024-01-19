@@ -1,6 +1,7 @@
 import "../styles/styles.css";
 import MobileMenu from "./modules/MobileMenu";
 import RevealOnScroll from "./modules/RevealOnScroll";
+import "lazysizes";
 import StickyHeader from "./modules/StickyHeader";
 
 new StickyHeader();
