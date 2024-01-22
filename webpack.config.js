@@ -11,6 +11,13 @@ const postCSSPlugins = [
   require("postcss-hexrgba"),
   require("autoprefixer"),
 ];
+class RunAfterCompile {
+  apply(compiler) {
+    compiler.hooks.done.tap("Copy images", function () {
+      fse.copySync("./app/assets/images", "./docs/assets/images");
+    });
+  }
+}
 
 const cssConfig = {
   test: /\.css$/i,
@@ -29,6 +36,7 @@ const commonPlugins = [
   new MiniCssExtractPlugin({
     filename: "styles.[chunkhash].css",
   }),
+  new RunAfterCompile(),
 ];
 
 const pages = fse
@@ -74,12 +82,23 @@ if (process.env.npm_lifecycle_event == "dev") {
 }
 
 if (process.env.npm_lifecycle_event == "build") {
+  config.module.rules.push({
+    test: /\.js$/,
+    exclude: /(node_modules)/,
+    use: {
+      loader: "babel-loader",
+      options: {
+        presets: ["@babel/preset-env"],
+      },
+    },
+  });
+
   postCSSPlugins.push(require("cssnano")); // Apply cssnano for production
   config.output = {
     filename: "[name].[chunkhash].js",
     chunkFilename: "[name].[chunkhash].js",
   };
-  config.output.path = path.resolve(__dirname, "dist");
+  config.output.path = path.resolve(__dirname, "docs");
   config.mode = "production";
 }
 
