@@ -11,6 +11,7 @@ const postCSSPlugins = [
   require("postcss-hexrgba"),
   require("autoprefixer"),
 ];
+
 class RunAfterCompile {
   apply(compiler) {
     compiler.hooks.done.tap("Copy images", function () {
@@ -32,28 +33,34 @@ const cssConfig = {
 };
 
 const commonPlugins = [
-  new CleanWebpackPlugin(),
+  new CleanWebpackPlugin({
+    cleanOnceBeforeBuildPatterns: [
+      "docs", // Clean the docs directory before builds
+      path.join(__dirname, "app", "!(assets)"), // Exclude the assets directory
+    ],
+  }),
   new MiniCssExtractPlugin({
     filename: "styles.[chunkhash].css",
   }),
   new RunAfterCompile(),
 ];
 
+// Update the template path and output path for HTML files in the 'docs' folder
 const pages = fse
-  .readdirSync("./app")
+  .readdirSync("./docs")
   .filter(function (file) {
     return file.endsWith(".html");
   })
   .map(function (page) {
     return new HtmlWebpackPlugin({
       filename: page,
-      template: `./app/${page}`,
+      template: `./docs/${page}`, // Adjust the template path
     });
   });
 
 const config = {
   entry: "./app/assets/scripts/app.js",
-  plugins: pages.concat(commonPlugins), // Merge plugins arrays
+  plugins: pages.concat(commonPlugins),
   module: {
     rules: [cssConfig],
   },
@@ -61,17 +68,17 @@ const config = {
     splitChunks: { chunks: "all" },
   },
   output: {
-    // Common output settings for both dev and build
+    path: path.resolve(__dirname, "docs"), // Output to the 'docs' folder
     filename: "[name].js",
     chunkFilename: "[name].chunk.js",
   },
 };
 
 if (process.env.npm_lifecycle_event == "dev") {
-  config.output.path = path.resolve(__dirname, "app");
+  config.output.path = path.resolve(__dirname, "app"); // Output to the 'app' folder in dev mode
   config.devServer = {
     watchFiles: {
-      paths: ["./app/**/*.html"],
+      paths: ["./docs/**/*.html"], // Watch HTML files in the 'docs' folder
     },
     static: path.join(__dirname, "app"),
     hot: true,
@@ -98,7 +105,7 @@ if (process.env.npm_lifecycle_event == "build") {
     filename: "[name].[chunkhash].js",
     chunkFilename: "[name].[chunkhash].js",
   };
-  config.output.path = path.resolve(__dirname, "docs");
+  config.output.path = path.resolve(__dirname, "docs"); // Output to the 'docs' folder in production
   config.mode = "production";
 }
 
