@@ -35,8 +35,8 @@ const cssConfig = {
 const commonPlugins = [
   new CleanWebpackPlugin({
     cleanOnceBeforeBuildPatterns: [
-      "docs", // Clean the docs directory before builds
-      path.join(__dirname, "app", "!(assets)"), // Exclude the assets directory
+      "docs", // Keep docs clean
+      path.join(__dirname, "app", "!(assets|index.html)"), // Exclude assets and index.html from app folder cleaning
     ],
   }),
   new MiniCssExtractPlugin({
@@ -45,22 +45,28 @@ const commonPlugins = [
   new RunAfterCompile(),
 ];
 
-// Update the template path and output path for HTML files in the 'docs' folder
+// Update paths for HTML files in 'docs' folder and exclude index.html from automatic generation
 const pages = fse
   .readdirSync("./docs")
   .filter(function (file) {
-    return file.endsWith(".html");
+    return file.endsWith(".html") && file !== "index.html"; // Exclude index.html
   })
   .map(function (page) {
     return new HtmlWebpackPlugin({
       filename: page,
-      template: `./docs/${page}`, // Adjust the template path
+      template: `./docs/${page}`,
     });
   });
 
+// Manually manage index.html for both dev and production
+const indexHtmlPlugin = new HtmlWebpackPlugin({
+  filename: "index.html",
+  template: `./app/index.html`,
+});
+
 const config = {
   entry: "./app/assets/scripts/app.js",
-  plugins: pages.concat(commonPlugins),
+  plugins: pages.concat(commonPlugins, indexHtmlPlugin),
   module: {
     rules: [cssConfig],
   },
@@ -68,17 +74,16 @@ const config = {
     splitChunks: { chunks: "all" },
   },
   output: {
-    path: path.resolve(__dirname, "docs"), // Output to the 'docs' folder
+    path: path.resolve(__dirname, "docs"), // Output to 'docs' in both dev and production
     filename: "[name].js",
     chunkFilename: "[name].chunk.js",
   },
 };
 
 if (process.env.npm_lifecycle_event == "dev") {
-  config.output.path = path.resolve(__dirname, "app"); // Output to the 'app' folder in dev mode
   config.devServer = {
     watchFiles: {
-      paths: ["./docs/**/*.html"], // Watch HTML files in the 'docs' folder
+      paths: ["./app/**/*.html"], // Watch all HTML files in 'app' folder
     },
     static: path.join(__dirname, "app"),
     hot: true,
@@ -101,11 +106,6 @@ if (process.env.npm_lifecycle_event == "build") {
   });
 
   postCSSPlugins.push(require("cssnano")); // Apply cssnano for production
-  config.output = {
-    filename: "[name].[chunkhash].js",
-    chunkFilename: "[name].[chunkhash].js",
-  };
-  config.output.path = path.resolve(__dirname, "docs"); // Output to the 'docs' folder in production
   config.mode = "production";
 }
 
