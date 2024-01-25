@@ -3,9 +3,10 @@ import MobileMenu from "./modules/MobileMenu";
 import RevealOnScroll from "./modules/RevealOnScroll";
 import "lazysizes";
 import StickyHeader from "./modules/StickyHeader";
+import ClientReport from "./modules/ClientReport";
 
 new StickyHeader();
-
+new ClientReport();
 let RevealOnScrollIn = new RevealOnScroll(
   document.querySelectorAll(".feature-items"),
   75

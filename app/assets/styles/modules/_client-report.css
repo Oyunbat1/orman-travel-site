@@ -1,0 +1,16 @@
+.client-report {
+  padding: 30px;
+
+  &__form {
+    display: flex;
+  }
+
+  &__input {
+    flex: 1;
+    padding: 10px;
+  }
+
+  &__error {
+    color: red;
+  }
+}
