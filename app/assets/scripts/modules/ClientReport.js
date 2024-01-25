@@ -28,7 +28,7 @@ class ClientReport {
         this.contentReport.innerHTML = response.data;
       })
       .catch(() => {
-        this.contentReport.innerHTML = `<p class="client-report__error">Чиний оруулсан нууц үг буруу байна шүү дээ ээ хөөрхий .</p>`;
+        this.contentReport.innerHTML = `<p class="client-report__error"Та 2-ын  оруулсан нууц үг буруу байна шүү дээ ээ хөөрхий .</p>`;
         this.field.value = "";
         this.field.focus();
       });
